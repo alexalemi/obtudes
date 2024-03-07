@@ -1,12 +1,97 @@
 ---
 theme: dashboard
 toc: false
+title: Weather Report
 ---
 
 # Weather Report
 
+
 Let's see if I can get a good weather report going.
 
+```js
+const readings_arr = data[0].record.readings
+let readings = Object.fromEntries(readings_arr.map((x) => [x.sensor_type, x]));
+display(readings)
+```
+
+```js
+const temperature = readings.Thermometer.value;
+const wbgt = readings["Wet Bulb Globe Temperature"].value;
+const heatIndex = readings["Heat Index"].value;
+const uvIndex = readings["UV Radiation Sensor"].value;
+
+function timeToBurn(uvi) {
+    // Use *4 for type III skin, *3 for type II (Mal) or *5 for type IV.
+    return (200 * 4) / (3 * uvi);
+}
+
+const ttb = timeToBurn(uvIndex);
+
+function formatMsg(level, msg) {
+    const colors = ["black", "green", "yellow", "red", "black", "purple"];
+    return html`<span color="${colors[level]}">${msg}</span>`
+}
+
+function wbgtMessage(x) {
+    if (x < 80) {
+        return formatMsg(0, "No issue.");
+    } else if (x < 85) {
+        return formatMsg(1, "Low, Body stressed after 45 minutes.");
+    } else if (x < 88) {
+        return formatMsg(2, "Moderate, body stressed after 30 minutes, heat cramps likely.");
+    } else if (x < 90) {
+        return formatMsg(3, "High, body stressed after 20 minutes. Heat exhaustion likely.");
+    } else if (x < 95) {
+        return formatMsg(4, "Extreme, body stressed after 15 minutes. Heat stroke likely.");
+    } else {
+        return formatMsg(5, "DANGER. Limit of survivability at 6 hours.");
+    }
+}
+
+function heatIndexMessage(x) {
+    if (x < 80) {
+        return formatMsg(0, "No issue.");
+    } else if (x < 90) {
+        return formatMsg(2, "Caution. Fatigue possible with prolonged exposure and/or physical activity.");
+    } else if (x < 103) {
+        return formatMsg(3, "Extreme Caution. Heat stroke, heat crams or heat exhaustion possible with prolonged exposure and/or physical activity.");
+    } else if (x < 125) {
+        return formatMsg(4, "Danger. Heat cramps or heat exhaustion likely, and heat stroke possible with prolonged exposure and/or physical activity.");
+    } else {
+        return formatMsg(5, "Extreme Danger! Heat stroke highly likely.");
+    }
+}
+
+function uvIndexMessage(x) {
+    if (x < 2.5) {
+        return formatMsg(0, "Low, you can safely enjoy being outside.");
+    } else if (x < 5.5) {
+        return formatMsg(2, "Moderate. Take precautions.");
+    } else if (x < 7.5) {
+        return formatMsg(3, "High. Protection against sun damage is needed. Wear a heat, sunglasses, sunscreen and a long sleeved shirt.");
+    } else if (x < 10.5) {
+        return formatMsg(4, "Very High. Protection against sun damage is needed.");
+    } else {
+        return formatMsg(5, "Extreme!");
+    }
+}
+
+```
+
+## Short Report and Dangers
+
+It is currently ${temperature} &deg;F.
+
+The WBGT is ${wbgt} &deg;F.  Which indicates: ${wbgtMessage(wbgt)}.
+
+The Heat Index is ${heatIndex} &deg;F. Which indicates: ${heatIndexMessage(heatIndex)}.
+
+The UV Index is ${uvIndex}. Which is a time to burn of ${ttb.toFixed(0)} minutes. Which indicates: ${uvIndexMessage(uvIndex)}.
+
+There are currently ${alerts.length} alerts.
+
+# Data Sources
 
 ## WeatherStem API V1
 
