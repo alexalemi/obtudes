@@ -1,5 +1,7 @@
 # Obtudes
 
+My repo of some example observable framework notebooks.  Should be available at [alexalemi.com/obtudes](https://alexalemi.com/obtudes/).
+
 This is an [Observable Framework](https://observablehq.com/framework) project. To start the local preview server, run:
 
 ```
