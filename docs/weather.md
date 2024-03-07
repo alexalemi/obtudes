@@ -142,13 +142,28 @@ const forecast = FileAttachment("./data/weatherstem_forecast.json").json();
 display(forecast)
 ```
 
+WBGT (purple) and Feels Like (red) plot:
 ```js
 display(
 Plot.plot({ 
     x: {type: "utc", ticks: "day", label: null},
     marks: [
         Plot.frame(),
-        Plot.lineY(forecast, {x: "validTimeLocal", y: "wbgt" })
+        Plot.lineY(forecast, {x: "validTimeLocal", y: "wbgt", stroke: "purple" }),
+        Plot.lineY(forecast, {x: "validTimeLocal", y: "temperatureFeelsLike", stroke: "red"}),
+        ]})
+);
+```
+
+Rain Forecast
+```js
+display(
+Plot.plot({ 
+    x: {type: "utc", ticks: "day", label: null},
+    y: {domain: [0, 100]},
+    marks: [
+        Plot.frame(),
+        Plot.lineY(forecast, {x: "validTimeLocal", y: "precipChance" })
         ]})
 );
 ```
@@ -176,6 +191,7 @@ display(accuweather)
 ## TODO
 
  * Get some historical readings from the station
- * Build out the warnings for the WBGT, UV Index, Heat Index, Lightning Strikes and Alerts.
+ * Make a one day forecast graph
  * Make some graphs for a forecast
- * Try to get some hyperlocal forecast stuff
+ * Figure out how to process alerts
+ * Figure out how to process lightning
