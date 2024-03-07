@@ -91,6 +91,8 @@ The UV Index is ${uvIndex}. Which is a time to burn of ${ttb.toFixed(0)} minutes
 
 There are currently ${alerts.length} alerts.
 
+${accuweather.Summary.Phrase}
+
 # Data Sources
 
 ## WeatherStem API V1
