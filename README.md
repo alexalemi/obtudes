@@ -2,6 +2,8 @@
 
 My repo of some example observable framework notebooks.  Should be available at [alexalemi.com/obtudes](https://alexalemi.com/obtudes/).
 
+Deployed to github pages using instructions [here](https://notes.billmill.org/programming/observable_framework/github_workflow_for_publishing_an_observable_framework.html).
+
 This is an [Observable Framework](https://observablehq.com/framework) project. To start the local preview server, run:
 
 ```
