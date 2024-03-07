@@ -30,7 +30,7 @@ const ttb = timeToBurn(uvIndex);
 
 function formatMsg(level, msg) {
     const colors = ["black", "green", "yellow", "red", "black", "purple"];
-    return html`<span color="${colors[level]}">${msg}</span>`
+    return html`<span style="color: ${colors[level]};">${msg}</span>`
 }
 
 function wbgtMessage(x) {
