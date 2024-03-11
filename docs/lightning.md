@@ -1,6 +1,5 @@
 ---
 title: Lightning Strikes
-draft: true
 ---
 
 # Lightning Strikes

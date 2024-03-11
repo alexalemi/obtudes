@@ -2,6 +2,7 @@
 theme: dashboard
 toc: false
 title: Weather Report
+draft: true
 ---
 
 # Weather Report

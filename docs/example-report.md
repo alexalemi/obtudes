@@ -1,6 +1,5 @@
 ---
 title: Example report
-draft: true
 ---
 
 # A brief history of space exploration
