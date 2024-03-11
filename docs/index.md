@@ -46,7 +46,7 @@ toc: false
 
 <div class="hero">
   <h1>obtudes.alexalemi.com</h1>
-  <h2>My observable framework posts.</h2>
+  <h2>My observable framework posts, see more posts at <a href="https://blog.alexalemi.com/">blog.alexalemi.com</a>.</h2>
 </div>
 
 ---
