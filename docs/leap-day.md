@@ -1,11 +1,14 @@
 # Leap Day
 
-
-The local newspaper ran a short article highlighting a "Leapling" born on Leap Day in a local hospital, and said that such an event was rare, occuring with a rate of only 1 in 1461.  Naturally they got this number from:
+Recently, our local newspaper ran a short article highlighting a "Leapling" born on Leap Day in a local hospital, and said that such an event was rare, occuring with a rate of only 1 in 1461.  Naturally they got this number from:
 
 ```tex
 \frac{1}{3 \cdot 365 + 366} = \frac{1}{1461}
 ```
+
+Unfortunately, as we'll be able to show below, this claim is *demonstrably false*! 
+
+First, though it isn't the point I want to really make, I feel as though many people have forgotten the relevance and difference between the Julian and Gregorian calendars.
 
 But of course, this isn't how leap days work in practice.  We switched from the Julian calendar to the Gregorian calendar to try to correct for the mismatch between the length of a year and the number of days in our calendar.
 
