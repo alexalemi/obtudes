@@ -29,8 +29,8 @@ function timeToBurn(uvi) {
 const ttb = timeToBurn(uvIndex);
 
 function formatMsg(level, msg) {
-    const colors = ["black", "green", "yellow", "red", "black", "purple"];
-    return html`<span style="color: ${colors[level]};">${msg}</span>`
+    const colors = ["muted", "blue", "green", "yellow", "red", "red"];
+    return html`<span class="${colors[level]}">${msg}</span>`
 }
 
 function wbgtMessage(x) {
@@ -53,13 +53,13 @@ function heatIndexMessage(x) {
     if (x < 80) {
         return formatMsg(0, "No issue.");
     } else if (x < 90) {
-        return formatMsg(2, "Caution. Fatigue possible with prolonged exposure and/or physical activity.");
+        return formatMsg(1, "Caution. Fatigue possible with prolonged exposure and/or physical activity.");
     } else if (x < 103) {
-        return formatMsg(3, "Extreme Caution. Heat stroke, heat crams or heat exhaustion possible with prolonged exposure and/or physical activity.");
+        return formatMsg(2, "Extreme Caution. Heat stroke, heat crams or heat exhaustion possible with prolonged exposure and/or physical activity.");
     } else if (x < 125) {
-        return formatMsg(4, "Danger. Heat cramps or heat exhaustion likely, and heat stroke possible with prolonged exposure and/or physical activity.");
+        return formatMsg(3, "Danger. Heat cramps or heat exhaustion likely, and heat stroke possible with prolonged exposure and/or physical activity.");
     } else {
-        return formatMsg(5, "Extreme Danger! Heat stroke highly likely.");
+        return formatMsg(4, "Extreme Danger! Heat stroke highly likely.");
     }
 }
 
@@ -67,13 +67,13 @@ function uvIndexMessage(x) {
     if (x < 2.5) {
         return formatMsg(0, "Low, you can safely enjoy being outside.");
     } else if (x < 5.5) {
-        return formatMsg(2, "Moderate. Take precautions.");
+        return formatMsg(1, "Moderate. Take precautions.");
     } else if (x < 7.5) {
-        return formatMsg(3, "High. Protection against sun damage is needed. Wear a heat, sunglasses, sunscreen and a long sleeved shirt.");
+        return formatMsg(2, "High. Protection against sun damage is needed. Wear a heat, sunglasses, sunscreen and a long sleeved shirt.");
     } else if (x < 10.5) {
-        return formatMsg(4, "Very High. Protection against sun damage is needed.");
+        return formatMsg(3, "Very High. Protection against sun damage is needed.");
     } else {
-        return formatMsg(5, "Extreme!");
+        return formatMsg(4, "Extreme!");
     }
 }
 
