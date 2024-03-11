@@ -1,5 +1,5 @@
 
-import { json } from "./common.js"; 
+import { json } from "../components/common.js"; 
 
 const data = await json(`https://cdn.weatherstem.com/dashboard/data/dynamic/lightning/30minutesarrayfull.json`);
 

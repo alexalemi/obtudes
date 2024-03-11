@@ -1,4 +1,4 @@
-import { longitude, latitude, json } from "./common.js";
+import { longitude, latitude, json } from "../components/common.js";
 
 const station = await json(`https://api.weather.gov/points/${latitude},${longitude}`);
 const forecast = await json(station.properties.forecastHourly);

@@ -1,6 +1,6 @@
 
 
-import { json, latitude, longitude } from "./common.js";
+import { json, latitude, longitude } from "../components/common.js";
 
 const apiKey = process.env.WEATHERSTEM;
 

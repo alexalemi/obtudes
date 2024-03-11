@@ -1,4 +1,4 @@
-import { baseURL, latitude, longitude, apiKey, json, transformObjectToArray } from "./common.js";
+import { baseURL, latitude, longitude, apiKey, json, transformObjectToArray } from "../components/common.js";
 
 const days = '15day';
 
