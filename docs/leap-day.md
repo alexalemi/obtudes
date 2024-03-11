@@ -1,25 +1,56 @@
 # Leap Day
 
-Recently, our local newspaper ran a short article highlighting a "Leapling" born on Leap Day in a local hospital, and said that such an event was rare, occuring with a rate of only 1 in 1461.  Naturally they got this number from:
+```js
+const leapConst = 1461;
+```
+
+Recently, our local newspaper ran a short article highlighting a "Leapling" born on Leap Day in a local hospital, and said that such an event was rare, occuring with a rate of only 1 in ${leapConst}.  Naturally they got this number from:
 
 ```tex
 \frac{1}{3 \cdot 365 + 366} = \frac{1}{1461}
 ```
 
 Unfortunately, as we'll be able to show below, this claim is *demonstrably false*! 
+It also offers an opportunity to share some interesting stories.
 
-First, though it isn't the point I want to really make, I feel as though many people have forgotten the relevance and difference between the Julian and Gregorian calendars.
+## Gregorian Calendar
 
-But of course, this isn't how leap days work in practice.  We switched from the Julian calendar to the Gregorian calendar to try to correct for the mismatch between the length of a year and the number of days in our calendar.
+First, I feel as though many people have forgotten the relevance and difference between the [Julian](https://en.wikipedia.org/wiki/Julian_calendar) and [Gregorian calendars](https://en.wikipedia.org/wiki/Gregorian_calendar). In the western calendar, Thursday October 4, 1582 was followed by *Friday October 15, 1582*.  There were 10 days that never happened.
 
-We'll load some data from [here](https://raw.githubusercontent.com/fivethirtyeight/data/master/births/US_births_2000-2014_SSA.csv).
+We all know the current calendar used in the Western world consists of 365 days, but with a leap day inserted at the end of February in every year divisible by 4.  Except, that *isn't* the current calendar of the western world. What I just described was the Julian calendar, first proposed by Julius Ceaser, which was in effect started on January 1, 45 BC (by our count).  This calendar has an average year length of 365.25 days, and has a leap day every ${leapConst} days (as in the paper's claim).  Unfortunately, this doesn't align perfectly with the 365.2522 day [tropical year](https://en.wikipedia.org/wiki/Tropical_year).^[The tropical year is the time it takes for the sun to return to the same point in the sky, which happens 20 minutes sooner than when the Earth finishes its journey around the Sun, aka, the [sidereal year](https://en.wikipedia.org/wiki/Sidereal_year) because of the precession of the equinoxes)]
+
+Because of this misalignment, every ${(1/0.0022).toFixed(1)} years, the Julian calendar drifts a day with respect to the equinoxes and solstices.  By the 1500s, since we had been using the Julian calendar for more than a millenia, it had drifted a dozen days or so since it was established.  This created an issue for the Catholic church, which used the [*computus*](https://en.wikipedia.org/wiki/Date_of_Easter) to calculate the date of Easter.  By 1582, the discrepency in dates was unacceptable to the Church, and Pope Gregory XIII would institute the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar) which tried to bring the calendar into better alignment with the tropical year by deleting a leap year every century and then re-insert it back every 400 years.  To correct for the percieved drift, a ten day leap was inserted, making the day after Thursday October 4, 1582: Friday October 15, 1582. 
+
+So, for the current calendar used by most of the Western world, if the year is divisible by 4, it is a leap year, *unless* it is also divisible by 100, in which case it is a normal year, *unless* it is also divislbe by 400, in which case it is indeed a leap year.
+
+This puts us at an interesting time in the Gregorian calendar, since the year 2000 was one of these rare, doubly modified years and so was an ordinary leap year.  Essentially no one alive today was around to observe the last leap day removal in 1900, and few of us will be around to above the next one in 2100, but it is important on the time scales of centuries that we follow the Gregorian rather than Julian calendar and that has helped keep our seasons, equinoxes and solstices aligned with fixed dates.
+
+## Obnoxious Precision
+
+The Gregorian calendar repeats every 400 years, or 146,097 days in which there are 97 leap days.  If we wanted to be erroneoulsy pedantic, we could take issue with the newspaper's claim of 1 in ${leapConst} leaplings by saying that for the Gregorian calendar leap days occur instead every 97 out of 146097 days or 1 in ${(146097/97).toFixed(6)}.
+
+Of course, this is annoying.  It is also *wrong*.  It harkens back to grading freshman physics homework solutions where students would report their answers with 9 decimal places as they would simply write down all 10 digits their calculator would display.  Above, I gave the odds of a leaping with 10 sigificant digits, specifying it to a precision of 0.0000005 days or *40 milliseconds*!  That's absurd.  However, it is also absurd to claim that leaplings occur at a rate of 1 in ${(146097/97).toFixed(0)} despite the better decimal habits.
+
+Why? Because as we said above, essentially no one alive today was around to see the last leap day deletion.  For people we interact with it is *more correct* to say that the ratio of leaplings is 1 in ${leapConst} than it is to say its 1 in ${(146097/97).toFixed(0)}, as that is a better model of the reality of the situation.
+
+## Better Models
+
+Of course, if we are interested in making appeals to reality, why don't we actually take a look at some data. It's well known that birth rates are not uniform across the year and that they show seasonal, weekly and even data specific influences.  Gelman et al. even used a hierarchical Bayesian model of these effects as the cover of [their book](http://www.stat.columbia.edu/~gelman/book/):
+
+<img src="http://www.stat.columbia.edu/~gelman/book/bda_cover.png" alt="Bayesian Data Analysis Cover Image" style="max-width: 480px;">
+
+Even on the cover we can see that there is a Leap Day specific supression of births, more than you would expect from simply the rarity of leap days.
+
+In a [followup analysis](https://statmodeling.stat.columbia.edu/2016/05/18/birthday-analysis-friday-the-13th-update/), the effects got even stronger:
+
+<img src="https://statmodeling.stat.columbia.edu/wp-content/uploads/2016/05/bialik-fridaythe13th-1-1024x846.png" alt="Re-analysis of day of year effects" style="max-width: 680px;" />
+
+## Observations
+
+But, in order to get a good estimate of the rarity of leaplings, we don't have to do a fancy hierarchical model, we can just look at the data directly. We'll use the same data as in the reanalysis, available [here](https://raw.githubusercontent.com/fivethirtyeight/data/master/births/US_births_2000-2014_SSA.csv), consisting of births from 2000 to 2014 collected by the US Social Security Administration.
 
 ```js
 const data = FileAttachment("./data/US_births_2000-2014_SSA.csv").csv({typed: true});
-```
-
-```js
-display(data)
 ```
 
 ```js
@@ -36,21 +67,62 @@ function sumBirths(acc, val) {
 const leaplings = data.filter(leapDay).reduce(sumBirths, 0);
 const totalDays = data.length;
 const leapDays = data.filter(leapDay).length;
+const nonLeapDays = totalDays - leapDays;
+const nonLeaplings = totalBirths - leaplings;
+```
+
+In this data there are a total of ${totalBirths.toLocaleString()} babies: ${leaplings.toLocaleString()} babies born on ${leapDays} leap days compared to ${nonLeaplings.toLocaleString()} babies born on ${nonLeapDays.toLocaleString()} non-leapdays over 14 years.  Is this consistent with the papers claim of 1 in ${leapConst}? 
+
+
+Let's try to calculate an estimate of the rate from the data, accounting for the fact that the data doesn't contain an even number of leap year cycles.  We can look at the average number of babies born on a nonleapday, multiply that up by 1460 and compare it to the number of leaplings born per leapday on average to get an empirical estimate of the leapling rate.
+
+```js echo
+function estimateRate(leaplings) {
+	const nonLeaplings = totalBirths - leaplings;
+	return ((nonLeaplings / nonLeapDays) * 1460) / (leaplings / leapDays);
+}
+
+const empiricalLeaplingRate = estimateRate(leaplings)
+```
+
+In our data, this estimate is ${empiricalLeaplingRate.toFixed(1)}.  This certaintly isn't exactly the ${leapConst} reported in the newspaper, but is it *consistent*?  The data we have are random and any time we collect a dataset like this we would expect some fluctuations. Could it be that our observed deviation is just a random fluctuation that took us away from ${leapConst}?
+
+## Statistical Significance
+
+To answer that, let's try to do statistics properly.  We'll imagine replacing our data with data we would be just as happy with under the null hypothesis: in this case the assumption that births are equally likely on every date.  To do that, we can simply *shuffle* our data in the appropriate way. Imagine taking all of the births in this dataset and randomly assigning them to a date within the interval of the dataset, then we could recalculate our corrected estimate from that shuffled dataset and see what we get.
+
+A single simulation gives us a single estimate:
+
+```js echo
+estimateRate(d3.randomBinomial(totalBirths, leapDays/totalDays)())
+```
+
+Doing this 2500 times we get a whole dataset of simulated values:
+
+```js
+const rawSimData = FileAttachment("./data/leapdaySim.json").json();
+const simData = Object.values(rawSimData);
+```
+
+```js
+display(simData)
+```
+
+```js
+display(
+	Plot.plot({
+		marks: [
+			Plot.binX({y: "count"}, {x: simData}),
+			Plot.ruleX([1461], {stroke: "red"}),
+			Plot.ruleX([(400 * 365 + 100 - 4 + 1)/(100 - 4 + 1)], {stroke: "blue"}),
+			]})
+)
 ```
 
 
-There were ${totalBirths} in the dataset and only ${leaplings} leaplings for a raw odds of ${(totalBirths / leaplings).toFixed(2)}.
-
-Compared to the days themselves which are ${(totalDays / leapDays).toFixed(2)}.  There were ${leapDays} leap days out of ${totalDays} days.
-
-So, let's try to correct the ratio.  We have ${((totalBirths - leaplings) / (totalDays - leapDays) * 1461 / (leaplings / leapDays)).toFixed(2)}.
-
-If we did the full calendar, we would have ${((400 * 365 + 100 - 4 + 1)/(100 - 4 + 1)).toFixed(2)}.
 
 
-I'm interested in trying to work out the odds that someone is a leapling, and in particular I'm sorta suspicious that because of the [Gelman Analysis](https://statmodeling.stat.columbia.edu/2016/05/18/birthday-analysis-friday-the-13th-update/) we might be able to exclude that statement.
 
-![relative births, day of year effect](https://statmodeling.stat.columbia.edu/wp-content/uploads/2016/05/bialik-fridaythe13th-1-1024x846.png)
 
 ## Simple Form
 
