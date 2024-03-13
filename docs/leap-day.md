@@ -11,7 +11,8 @@ Recently, our local newspaper ran a short article highlighting a "Leapling" born
 ```
 
 Unfortunately, as we'll be able to show below, this claim is *demonstrably false*! 
-It also offers an opportunity to share some interesting stories.
+It also offers an opportunity to share some interesting stories, and give us an excuse for introducing 
+the basics of statistics.
 
 ## Gregorian Calendar
 
@@ -87,7 +88,7 @@ const empiricalLeaplingRate = estimateRate(leaplings)
 
 In our data, this estimate is ${empiricalLeaplingRate.toFixed(1)}.  This certaintly isn't exactly the ${leapConst} reported in the newspaper, but is it *consistent*?  The data we have are random and any time we collect a dataset like this we would expect some fluctuations. Could it be that our observed deviation is just a random fluctuation that took us away from ${leapConst}?
 
-## Statistical Significance
+## Statistical Significance and the Nature of Statistical Argument
 
 To answer that, let's try to do statistics properly.  We'll imagine replacing our data with data we would be just as happy with under the null hypothesis: in this case the assumption that births are equally likely on every date.  To do that, we can simply *shuffle* our data in the appropriate way. Imagine taking all of the births in this dataset and randomly assigning them to a date within the interval of the dataset, then we could recalculate our corrected estimate from that shuffled dataset and see what we get.
 
@@ -97,31 +98,63 @@ A single simulation gives us a single estimate:
 estimateRate(d3.randomBinomial(totalBirths, leapDays/totalDays)())
 ```
 
-Doing this 2500 times we get a whole dataset of simulated values:
+Doing this ${ simData.length.toLocaleString() } times we get a whole dataset of simulated values:
 
 ```js
 const rawSimData = FileAttachment("./data/leapdaySim.json").json();
-const simData = Object.values(rawSimData);
 ```
 
 ```js
+const simData = Object.values(rawSimData);
 display(simData)
+```
+
+Which we can plot as a histogram, along with both the ${ leapConst } we simulated (black dashed), as well as our observed estimate from the data (red). Notice that the claim that our observed leapling rate varied away from ${ leapConst } because of a random fluctuation is *incredulous*.  That just isn't possible.  There is no way we would have observed such a fluctuation. 
+
+```js
+display(
+	Plot.plot({
+		y: {grid: true},
+		x: {domain: [1400, 1600]},
+		marks: [
+			Plot.areaY(simData, Plot.binX({y: "count", filter: null}, {fillOpacity: 0.2})),
+			Plot.lineY(simData, Plot.binX({y: "count", filter: null})),
+			Plot.ruleY([0]),
+			Plot.ruleX([1461], {stroke: "black", strokeDasharray: [1,0,1]}),
+			Plot.ruleX([empiricalLeaplingRate], {stroke: "red"}),
+			]})
+)
+```
+
+What we've just done is the very heart of statistical argument.  We had some *null hypothesis* we believed might apply, namely that births are uniformly distributed across days, and we had an empirical estimate of the observed rate of births on leap days (correcting for the 4 year calendar cycle), and we wanted to ask whether the observation we made was *consistent* with the null hypothesis.  To do this, we had to replace our data with data we deemed admissible under the null hypothesis: in this case, if the dates don't matter, we could have taken our dataset of births and shuffled the associated birth day for each of them and that should have been just as likely a dataset under the null hypothesis.  We simulated this and for each simulation computed the same *statistic* we had computed on the original dataset.  The final determination we need to make is as to whether or not the observation we made (red line) could have been a fair samply from the *sampling distribution* under the null hypothesis. In this case, it's clear it isn't.
+
+```js
+simData.filter( x => x >= empiricalLeaplingRate ).length
+```
+
+## Jacknife and Confidence Intervals
+
+```js echo
+const bootstrapEstimate = Float64Array.from({length: 25_000}, 
+	() => estimateRate(d3.randomBinomial(totalBirths, leaplings/totalBirths)()))
 ```
 
 ```js
 display(
 	Plot.plot({
+		y: {grid: true},
+		x: {domain: [1400, 1650]},
 		marks: [
-			Plot.binX({y: "count"}, {x: simData}),
-			Plot.ruleX([1461], {stroke: "red"}),
-			Plot.ruleX([(400 * 365 + 100 - 4 + 1)/(100 - 4 + 1)], {stroke: "blue"}),
+			Plot.areaY(bootstrapEstimate, Plot.binX({y: "count", filter: null}, {fillOpacity: 0.2})),
+			Plot.lineY(bootstrapEstimate, Plot.binX({y: "count", filter: null})),
+			Plot.ruleY([0]),
+			Plot.ruleX([1461], {stroke: "black", strokeDasharray: [1,0,1]}),
+			Plot.ruleX([empiricalLeaplingRate], {stroke: "red"}),
 			]})
 )
 ```
 
-
-
-
+## Bayesian Inference
 
 
 ## Simple Form

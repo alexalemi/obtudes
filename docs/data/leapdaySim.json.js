@@ -1,7 +1,7 @@
 
 import * as d3 from "d3";
 
-const n = 2500;
+const n = 25_000;
 const totalBirths = 62187024;
 const totalDays = 5475 + 4;
 const leaplings = 41869;
