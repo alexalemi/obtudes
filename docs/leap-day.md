@@ -4,7 +4,7 @@
 const leapConst = 1461;
 ```
 
-Recently, our local newspaper ran a short article highlighting a "Leapling" born on Leap Day in a local hospital, and said that such an event was rare, occuring with a rate of only 1 in ${leapConst}.  Naturally they got this number from:
+Recently, our local newspaper ran a short article highlighting a "Leapling" born on Leap Day in a local hospital, and said that such an event was rare, occurring with a rate of only 1 in ${leapConst}.  Naturally they got this number from:
 
 ```tex
 \frac{1}{3 \cdot 365 + 366} = \frac{1}{1461}
@@ -18,19 +18,19 @@ the basics of statistics.
 
 First, I feel as though many people have forgotten the relevance and difference between the [Julian](https://en.wikipedia.org/wiki/Julian_calendar) and [Gregorian calendars](https://en.wikipedia.org/wiki/Gregorian_calendar). In the western calendar, Thursday October 4, 1582 was followed by *Friday October 15, 1582*.  There were 10 days that never happened.
 
-We all know the current calendar used in the Western world consists of 365 days, but with a leap day inserted at the end of February in every year divisible by 4.  Except, that *isn't* the current calendar of the western world. What I just described was the Julian calendar, first proposed by Julius Ceaser, which was in effect started on January 1, 45 BC (by our count).  This calendar has an average year length of 365.25 days, and has a leap day every ${leapConst} days (as in the paper's claim).  Unfortunately, this doesn't align perfectly with the 365.2522 day [tropical year](https://en.wikipedia.org/wiki/Tropical_year).^[The tropical year is the time it takes for the sun to return to the same point in the sky, which happens 20 minutes sooner than when the Earth finishes its journey around the Sun, aka, the [sidereal year](https://en.wikipedia.org/wiki/Sidereal_year) because of the precession of the equinoxes)]
+We all know the current calendar used in the Western world consists of 365 days, but with a leap day inserted at the end of February in every year divisible by 4.  Except, that *isn't* the current calendar of the western world. What I just described was the Julian calendar, first proposed by Julius Caeser, which was in effect started on January 1, 45 BC (by our count).  This calendar has an average year length of 365.25 days, and has a leap day every ${leapConst} days (as in the paper's claim).  Unfortunately, this doesn't align perfectly with the 365.2522 day [tropical year](https://en.wikipedia.org/wiki/Tropical_year).^[The tropical year is the time it takes for the sun to return to the same point in the sky, which happens 20 minutes sooner than when the Earth finishes its journey around the Sun, aka, the [sidereal year](https://en.wikipedia.org/wiki/Sidereal_year) because of the precession of the equinoxes)]
 
-Because of this misalignment, every ${(1/0.0022).toFixed(1)} years, the Julian calendar drifts a day with respect to the equinoxes and solstices.  By the 1500s, since we had been using the Julian calendar for more than a millenia, it had drifted a dozen days or so since it was established.  This created an issue for the Catholic church, which used the [*computus*](https://en.wikipedia.org/wiki/Date_of_Easter) to calculate the date of Easter.  By 1582, the discrepency in dates was unacceptable to the Church, and Pope Gregory XIII would institute the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar) which tried to bring the calendar into better alignment with the tropical year by deleting a leap year every century and then re-insert it back every 400 years.  To correct for the percieved drift, a ten day leap was inserted, making the day after Thursday October 4, 1582: Friday October 15, 1582. 
+Because of this misalignment, every ${(1/0.0022).toFixed(1)} years, the Julian calendar drifts a day with respect to the equinoxes and solstices.  By the 1500s, since we had been using the Julian calendar for more than a millenia, it had drifted a dozen days or so since it was established.  This created an issue for the Catholic church, which used the [*computus*](https://en.wikipedia.org/wiki/Date_of_Easter) to calculate the date of Easter.  By 1582, the discrepency in dates was unacceptable to the Church, and Pope Gregory XIII would institute the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar) which tried to bring the calendar into better alignment with the tropical year by deleting a leap year every century and then re-inserting it back every 400 years.  To correct for the perceived drift, a ten day leap was inserted, making the day after Thursday October 4, 1582: Friday October 15, 1582. 
 
-So, for the current calendar used by most of the Western world, if the year is divisible by 4, it is a leap year, *unless* it is also divisible by 100, in which case it is a normal year, *unless* it is also divislbe by 400, in which case it is indeed a leap year.
+So, for the current calendar used by most of the Western world, if the year is divisible by 4, it is a leap year, *unless* it is also divisible by 100, in which case it is a normal year, *unless* it is also divisible by 400, in which case it is indeed a leap year.
 
 This puts us at an interesting time in the Gregorian calendar, since the year 2000 was one of these rare, doubly modified years and so was an ordinary leap year.  Essentially no one alive today was around to observe the last leap day removal in 1900, and few of us will be around to above the next one in 2100, but it is important on the time scales of centuries that we follow the Gregorian rather than Julian calendar and that has helped keep our seasons, equinoxes and solstices aligned with fixed dates.
 
 ## Obnoxious Precision
 
-The Gregorian calendar repeats every 400 years, or 146,097 days in which there are 97 leap days.  If we wanted to be erroneoulsy pedantic, we could take issue with the newspaper's claim of 1 in ${leapConst} leaplings by saying that for the Gregorian calendar leap days occur instead every 97 out of 146097 days or 1 in ${(146097/97).toFixed(6)}.
+The Gregorian calendar repeats every 400 years, or 146,097 days in which there are 97 leap days.  If we wanted to be erroneously pedantic, we could take issue with the newspaper's claim of 1 in ${leapConst} leaplings by saying that for the Gregorian calendar leap days occur instead every 97 out of 146097 days or 1 in ${(146097/97).toFixed(6)}.
 
-Of course, this is annoying.  It is also *wrong*.  It harkens back to grading freshman physics homework solutions where students would report their answers with 9 decimal places as they would simply write down all 10 digits their calculator would display.  Above, I gave the odds of a leaping with 10 sigificant digits, specifying it to a precision of 0.0000005 days or *40 milliseconds*!  That's absurd.  However, it is also absurd to claim that leaplings occur at a rate of 1 in ${(146097/97).toFixed(0)} despite the better decimal habits.
+Of course, this is annoying.  It is also *wrong*.  It harkens back to grading freshman physics homework solutions where students would report their answers with 9 decimal places as they would simply write down all 10 digits their calculator would display.  Above, I gave the odds of a leaping with 10 significant digits, specifying it to a precision of 0.0000005 days or *40 milliseconds*!  That's absurd.  However, it is also absurd to claim that leaplings occur at a rate of 1 in ${(146097/97).toFixed(0)} despite the better decimal habits.
 
 Why? Because as we said above, essentially no one alive today was around to see the last leap day deletion.  For people we interact with it is *more correct* to say that the ratio of leaplings is 1 in ${leapConst} than it is to say its 1 in ${(146097/97).toFixed(0)}, as that is a better model of the reality of the situation.
 
@@ -194,3 +194,7 @@ display(
 			]})
 )
 ```
+
+## Appendix - Just how sure can we be?
+
+TODO try to use KL to bound how unlikely the data is.
