@@ -128,11 +128,19 @@ display(
 
 What we've just done is the very heart of statistical argument.  We had some *null hypothesis* we believed might apply, namely that births are uniformly distributed across days, and we had an empirical estimate of the observed rate of births on leap days (correcting for the 4 year calendar cycle), and we wanted to ask whether the observation we made was *consistent* with the null hypothesis.  To do this, we had to replace our data with data we deemed admissible under the null hypothesis: in this case, if the dates don't matter, we could have taken our dataset of births and shuffled the associated birth day for each of them and that should have been just as likely a dataset under the null hypothesis.  We simulated this and for each simulation computed the same *statistic* we had computed on the original dataset.  The final determination we need to make is as to whether or not the observation we made (red line) could have been a fair samply from the *sampling distribution* under the null hypothesis. In this case, it's clear it isn't.
 
-```js
-simData.filter( x => x >= empiricalLeaplingRate ).length
-```
 
-## Jacknife and Confidence Intervals
+## Bootstrapping and Confidence Intervals
+
+We've decided we can clearly rule the newspapers claim as *false*, but if we were going to write the article, what value should we give?  We could give the ${empiricalLeaplingRate} we observed, but again, given the stochastic or random nature of data, we should attempt to report more than a single number that we would believe represents the true leapling rate.
+
+We'd like to instead report something like a distribution for our beliefs, which values would we allow and to what degree?  Unfortunately we have but the one dataset, how can we turn that into a distribution of measurements?
+
+The [bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)) comes to our rescue.  Again, the core idea is simple, let's fix the glitch.  We only had one dataset, so let's fix that and create a whole slew of datasets that we would just as *credible* as the one we have.  A general purpose way to do that is to resample our data with replacement.  Imagine taking every one of these births and putting them into a hat.  If we drew out all ${totalBirths.toLocaleString()} births, one at a time, we would exactly recreate our dataset (albeit in a random order), but we can generate a new dataset that is just as credible if we put those ${totalBirths.toLocaleString()} in our hat and draw out a total of ${totalBirths.toLocaleString()} from the hat, but ensure we *replace* each after we draw it out, meaning it could reoccur.
+
+There is an approximation happening here, we are *modelling* the data in some capacity, in this case the model turns out to be equivalent to trusting the empirical data distribution as if it were the proper data generating distribution, but its a fairly inoccuous assumption.  We don't need to say that our data is Gaussian, or anything about its moments or tail behavior, we are simply drawing out the data that was observed, whatever distribution that may have been drawn from, we simply allow that those births could reoccur with a rate of 1 to ${totalBirths.toLocaleString()}.
+
+We can simulate this process efficiently by judicious use of a [Binomial Distribution](https://en.wikipedia.org/wiki/Binomial_distribution):
+
 
 ```js echo
 const bootstrapEstimate = Float64Array.from({length: 25_000}, 
@@ -154,47 +162,28 @@ display(
 )
 ```
 
-## Bayesian Inference
+This *distribution* represents our belief in what sort of leapling rates we should treat as being *consistent* with the data we observed.  The histogram does a better job of showing that belief and whatever sort of shape it has, but if we were looking for a way to summarize this distribution we summarize it with an interval, say a 90% interval by saying that 90% of these credible values lie between: ${d3.quantile(bootstrapEstimate, 0.05).toFixed(0)} and ${d3.quantile(bootstrapEstimate, 0.95).toFixed(0)}.
 
+Notice again that this interval *doesn't* include the newspapers value of 1461!
 
-## Simple Form
-
-Let's try to simplify things a bit and take an equal period out of the data.
-
-```js
-const filteredData = data.filter((x) => (x.year < 2012));
-const filteredTotalBirths = filteredData.reduce(sumBirths, 0);
-const filteredLeaplings = filteredData.filter(leapDay).reduce(sumBirths, 0);
-```
-
-We get ${filteredTotalBirths} of which ${filteredLeaplings} are leaplings, so ${filteredTotalBirths - filteredLeaplings} non leaplings.
-
-```js
-import jstat from "npm:jstat";
-
-function linspace(start, stop, nsteps) {
-	const delta = (stop - start) / nsteps;
-	return d3.range(nsteps).map((i) => start + i * delta)
-}
-
-function normalize(xs) {
-	const total = xs.reduce((acc, val) => acc + val, 0)
-	return xs.map((x) => x / total);
-}
-
-const odds = linspace(1450, 1700, 300);
-const ps = normalize(odds.map((y, i) => -1/(odds[i]*odds[i]) * jstat.beta.pdf(1/y, filteredLeaplings, filteredTotalBirths - filteredLeaplings)));
-
-display(
-	Plot.plot({
-		marks: [
-			Plot.lineY(ps, {x: odds}),
-			Plot.ruleX([1461], {stroke: "red"}),
-			Plot.ruleX([(400 * 365 + 100 - 4 + 1)/(100 - 4 + 1)], {stroke: "blue"}),
-			]})
-)
-```
 
 ## Appendix - Just how sure can we be?
 
-TODO try to use KL to bound how unlikely the data is.
+We saw above that when we tried to randomly permute the data's labels, the assertion that we would observe a value as high as ${empiricalLeaplingRate.toFixed(2)} if the true rate was 1461 in a dataset of ${totalBirths} was *incredulous*.  Just how unlikely would that be?
+
+To answer that we can use [Sanov's Theorem](https://en.wikipedia.org/wiki/Sanov%27s_theorem) and say that the probability of observing such a large deviation is approximately:
+
+```tex
+P \approx 2^{-n D(P^*, Q)} 
+```
+
+```js
+let q = 1/1461;
+let p = 1/empiricalLeaplingRate;
+
+let kl = p * Math.log2(p/q) + (1-p) * Math.log2((1-p)/(1-q))
+```
+
+which in this case works out to be the vanishingly small ${Math.pow(2, -totalBirths * kl).toExponential(2)}!!
+
+
