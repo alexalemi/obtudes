@@ -9,12 +9,17 @@
     "observable": "observable"
   },
   "dependencies": {
-    "@observablehq/framework": "latest",
-    "@observablehq/stdlib": "^5.8.6",
-    "d3": "^7.8.5",
+    "@observablehq/framework": "^1.6.0",
+    "@observablehq/stdlib": "^5.8.7",
+    "d3": "^7.9.0",
     "d3-dsv": "^3.0.1",
     "d3-time-format": "^4.1.0",
-    "markdown-it-footnote": "^4.0.0"
+    "fs": "^0.0.1-security",
+    "geotoolbox": "^2.0.3",
+    "markdown-it-footnote": "^4.0.0",
+    "npm": "^10.5.2",
+    "shapefile": "^0.6.6",
+    "topojson-server": "^3.0.1"
   },
   "devDependencies": {
     "rimraf": "^5.0.5"
