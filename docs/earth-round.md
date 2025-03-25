@@ -4,6 +4,11 @@ draft: true
 ---
 # The Earth is Round
 
+
+My son is taking an archery class and a couple of the other kids in the class appear to be flat-earthers. At a recent class, they were challenging the other kids on why they believed the Earth was round and what evidence they had for this belief. My son proffered that he has seen photos of the earth from space, but they were quick to dismiss these as being fake.  This made my son upset, but led to what I think are some deep conversations about evidence, belief and experience.
+
+In particular, I had to admit that most people who believe the earth is round probably don't have any direct experience or evidence for this fact, they largely belief it because they were told it is true by others.  This got me thinking about how I might be able to give my sons some direct experience of the Earth being round.
+
 We recently took a trip to Buffalo NY to visit family and try to view the total solar eclipse.
 
 ```js
