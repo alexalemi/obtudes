@@ -80,4 +80,42 @@ let total = data.reduce(([prevx, acc], {x, y}, i) => [x, acc + (x - prevx) * y],
 
 The total irradiance is ${total.toPrecision(3)}.
 
+Let's try to do the full year next.
 
+```js
+let yearTs = d3.range(0, year, 1/60);
+let yearData = yearTs.map(x => ({x: x, y: relu(f(theta, x/siderealDay * 2 * Math.PI + Math.PI, x / year * 2 * Math.PI, theta0))}));
+let yearTotal = yearData.reduce(([prevx, acc], {x, y}, i) => [x, acc + (x - prevx) * y], [0, -(yearData[1].x - yearData[0].x) * (yearData[0].y + yearData[yearData.length - 1].y)])[1]
+```
+
+The total irradiance is ${yearTotal.toPrecision(5)}.
+
+
+
+
+```js
+function yearlyFlux(latitude) {
+    let theta = (latitude + 90) / 180 * Math.PI;
+    let yearTs = d3.range(0, year, 1);
+    let yearData = yearTs.map(x => ({x: x, y: relu(f(theta, x/siderealDay * 2 * Math.PI + Math.PI, x / year * 2 * Math.PI, theta0))}));
+    let yearTotal = yearData.reduce(([prevx, acc], {x, y}, i) => [x, acc + (x - prevx) * y], [0, -(yearData[1].x - yearData[0].x) * (yearData[0].y + yearData[yearData.length - 1].y)])[1]
+    return yearTotal;
+}
+
+let latitudes = d3.range(-90, 90, 1);
+let fluxAtLatitude = latitudes.map(yearlyFlux)
+```
+
+```js
+fluxAtLatitude
+```
+
+```js
+Plot.plot({
+    width: 1080,
+    y: {domain: [0, 2700]},
+    marks: [
+    Plot.areaY(fluxAtLatitude)
+    ]
+})
+```
