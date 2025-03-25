@@ -20,21 +20,6 @@ const year = 365.2422 * 24;
 ```
 
 
-```js
-const latitude = view(
-  Inputs.range([-90, 90],
-    {label: "latitude (deg)", value: 43}
-  )
-);
-
-
-const day = view(
-  Inputs.range([0, 365],
-    {step: 1, label: "day"}
-  )
-);
-```
-
 
 ```js echo
 // The earth's tilt
@@ -61,6 +46,22 @@ function relu(x) {
 let ts = d3.range(0, 24, 1/60);
 let data = ts.map(x => ({x: x, y: relu(f(theta, (day * 24 + x)/siderealDay * 2 * Math.PI + Math.PI, psi, theta0))}));
 ```
+
+```js
+const latitude = view(
+  Inputs.range([-90, 90],
+    {label: "latitude (deg)", value: 43}
+  )
+);
+
+
+const day = view(
+  Inputs.range([0, 365],
+    {step: 1, label: "day"}
+  )
+);
+```
+
 
 ```js
 Plot.plot({
