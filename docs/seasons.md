@@ -57,10 +57,9 @@ function relu(x) {
 }
 ```
 
-```js
-// let data = ts.map(x => relu(f(theta, x, psi, theta0)));
+```js echo
 let ts = d3.range(0, 24, 1/60);
-let data = ts.map(x => ({x: x, y: relu(f(theta, x/siderealDay * 2 * Math.PI + Math.PI, psi, theta0))}));
+let data = ts.map(x => ({x: x, y: relu(f(theta, (day * 24 + x)/siderealDay * 2 * Math.PI + Math.PI, psi, theta0))}));
 ```
 
 ```js
