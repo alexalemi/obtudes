@@ -68,8 +68,16 @@ Plot.plot({
     width: 1080,
     y: {domain: [0, 1]},
     marks: [
-    Plot.lineY(data, {x: "x", y: "y"})
+    Plot.areaY(data, {x: "x", y: "y"})
     ]
 })
 ```
+
+
+```js
+let total = data.reduce(([prevx, acc], {x, y}, i) => [x, acc + (x - prevx) * y], [0, -(data[1].x - data[0].x) * (data[0].y + data[data.length - 1].y)])[1]
+```
+
+The total irradiance is ${total.toPrecision(3)}.
+
 
