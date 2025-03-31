@@ -43,14 +43,14 @@ function relu(x) {
 ```
 
 ```js echo
-let ts = d3.range(0, 24, 1/60);
+let ts = d3.range(0, 24, 0.1);
 let data = ts.map(x => ({x: x, y: relu(f(theta, (day * 24 + x)/siderealDay * 2 * Math.PI + Math.PI, psi, theta0))}));
 ```
 
 ```js
 const latitude = view(
   Inputs.range([-90, 90],
-    {label: "latitude (deg)", value: 43}
+    {label: "latitude (deg)", value: 28}
   )
 );
 
@@ -83,7 +83,7 @@ The total irradiance is ${total.toPrecision(3)}.
 Let's try to do the full year next.
 
 ```js
-let yearTs = d3.range(0, year, 1/60);
+let yearTs = d3.range(0, year, 1);
 let yearData = yearTs.map(x => ({x: x, y: relu(f(theta, x/siderealDay * 2 * Math.PI + Math.PI, x / year * 2 * Math.PI, theta0))}));
 let yearTotal = yearData.reduce(([prevx, acc], {x, y}, i) => [x, acc + (x - prevx) * y], [0, -(yearData[1].x - yearData[0].x) * (yearData[0].y + yearData[yearData.length - 1].y)])[1]
 ```
@@ -119,3 +119,53 @@ Plot.plot({
     ]
 })
 ```
+
+# Globe
+
+Let's see if we can make a version of the earth from the direction of the sun.
+
+
+```js
+const world = FileAttachment("data/land-110m.json").json();
+```
+
+```js
+const land = topojson.feature(world, world.objects.land);
+```
+
+```js
+const globe = Plot.marks([Plot.graticule(), Plot.geo(land, {fill: "#000000"}), Plot.sphere()]);
+```
+
+
+```js
+const day2 = view(
+  Inputs.range([0, 365],
+    {step: 1, label: "day"}
+  )
+);
+
+const hour = view(
+  Inputs.range([0, 24],
+   {step: 1/60, label: "hour"}
+  )
+);
+```
+
+```js
+const rotate = [ang0, ang1, ang2];
+```
+
+```js
+const hours = day2 * siderealDay + hour;
+// const hours = now / 1000 * 24 / 5;
+const ang0 = 360 * hours / siderealDay;
+const ang1 = 23.5 * Math.cos(hours / year * 2 * Math.PI);
+const ang2 = 23.5 * Math.sin(hours / year * 2 * Math.PI);
+```
+
+
+```js
+globe.plot({width: 240, height: 245, projection: {type: "orthographic", rotate}})
+```
+
